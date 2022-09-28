@@ -5,10 +5,11 @@ from net import Net
 
 FILE_PATH = 'ddi_with_type_latest.txt'
 if __name__ == '__main__':
-    print('test')
+    print('Begin to do homework')
 
     data = DataLoader(FILE_PATH)
     net = Net(data)
     net.ComputeAverageDegree()
     net.ComputeEdgeType()
     net.DrawDegreeDis()
+    net.FindMinRoute()

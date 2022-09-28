@@ -28,6 +28,17 @@ class Net:
                 degree[self._net[i, 1]] = 1
             self._degree_dict[self._net[i, 1]] += 1
 
+        self._network = np.zeros((self._point_number, self._point_number), dtype=int)
+        self._min_dis = np.full((self._point_number, self._point_number), -1, dtype=int)
+        self._min_route = [None] * self._point_number
+        for i in range(0, self._point_number):
+            self._min_route[i] = [None] * self._point_number
+            for j in range(0, self._point_number):
+                self._min_route[i][j] = [i]
+
+        for item in self._net:
+            self._network[item[0], item[1]] = item[2]
+
         print('=======================================================================')
         print('Q1:  The size of the points is :', end='\n')
         print(len(self._degree_dict))
@@ -65,4 +76,18 @@ class Net:
         list = list[list != 0] / (self._point_number * 2)
         plt.scatter(index, list)
         plt.show()
+
+    def FindMinRoute(self):
+        f = open('test_data.txt', encoding='UTF-8')
+        test_data = np.zeros((4, 2), dtype=int)
+        line = f.readline()
+        i = 0
+        while line:
+            data = line.split(' ')
+            test_data[i, 0] = data[0]
+            test_data[i, 1] = data[1]
+            i += 1
+            line = f.readline()
+
+        f.close()
 
