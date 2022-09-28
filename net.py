@@ -1,6 +1,6 @@
 import numpy
 import numpy as np
-import matplotlib as plot
+import matplotlib.pyplot as plt
 
 
 class Net:
@@ -38,7 +38,31 @@ class Net:
         print('=======================================================================')
         print('Q2:  The average degree is :')
         print(self._edge_number / (self._point_number / 2))
-        print('Q2   The points are :')
+        print('Q2:   The points are :')
         temp_list = sorted(self._degree_dict.items(), key=lambda temp: (temp[1], temp[0]), reverse=True)
         for item in temp_list[0:20]:
             print(item[0])
+
+    def ComputeEdgeType(self):
+        list = np.zeros(1000, dtype=int)
+        number = 0
+        for item in self._net:
+            if list[item[2]] == 0:
+                number += 1
+            list[item[2]] += 1
+        print('=======================================================================')
+        print('Q3:  The number of the types is')
+        print(number)
+        print('Q3: The number of the edge that is 47 type is ')
+        print(list[47])
+
+    def DrawDegreeDis(self):
+        print('=======================================================================')
+        list = np.zeros(2000)
+        for item in self._degree_dict.items():
+            list[item[1]] += 1
+        index = np.nonzero(list)
+        list = list[list != 0] / (self._point_number * 2)
+        plt.scatter(index, list)
+        plt.show()
+
