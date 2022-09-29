@@ -83,7 +83,7 @@ class Net:
         plt.show()
 
     def ResetRoute(self, i, j, k):
-        self._min_dis[i][j] = self._min_dis[i][k] + self._min_dis[k][j]
+        self._min_dis[i, j] = self._min_dis[i, k] + self._min_dis[k, j]
         self._min_route[i][j] = self._min_route[i][k] + self._min_route[k][j]
         self._min_route[i][j].remove(k)
 
@@ -102,19 +102,19 @@ class Net:
             line = f.readline()
 
         print('test')
-        # 下面使用弗洛伊德算法计算最短路径
-        for i in range(0, self._point_number):
-            print(i)
-            for j in range(0, self._point_number):
-                for k in range(0, self._point_number):
-                    if self._min_dis[i][k] > 0 & self._min_dis[k][j] > 0:
-                        if self._min_dis[i][j] > 0:
-                            if self._min_dis[i][k] + self._min_dis[k][j] < self._min_dis[i][j]:
-                                self.ResetRoute(i, j, k)
-                        else:
-                            self.ResetRoute(i, j, k)
-
-        print('Finish floyd')
+        # 下面使用迪杰斯特拉算法计算最短路径
         for item in test_data:
-            print(self._min_route[item[0]][item[j]])
+            joined_list = [item[0]]
+            joined_number = 1
+            min_dis = [-1, 10000000]
+            while joined_number != self._point_number:
+                for i in range(0, self._point_number):
+                    for j in range(0, len(joined_list)):
+                        if self._min_dis[i][joined_list[j]] > 0 & self._min_dis[i][joined_list[j]] < min_dis[1]:
+                            min_dis[0] = i
+                            min_dis[1] = self._min_dis[i][joined_list[j]]
+                    joined_list.append(i)
+                    joined_number += 1
+
+            print(self._min_route[item[0]][item[1]])
         f.close()
