@@ -1,6 +1,6 @@
-import numpy
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 
 class Net:
@@ -28,21 +28,25 @@ class Net:
                 degree[self._net[i, 1]] = 1
             self._degree_dict[self._net[i, 1]] += 1
 
-        self._network = np.zeros((self._point_number, self._point_number), dtype=int)
-        self._min_dis = np.full((self._point_number, self._point_number), -1, dtype=int)
+        self._min_dis = np.full((self._point_number, self._point_number), 9999999, dtype=int)
         self._min_route = [None] * self._point_number
+        self._connect_net = [None] * self._point_number
 
         # 构建对应的路线矩阵
         for i in range(0, self._point_number):
             self._min_route[i] = [None] * self._point_number
+            self._connect_net[i] = [None]
             for j in range(0, self._point_number):
-                self._min_route[i][j] = [i]
-                self._min_route[i][j].append(j)
+                self._min_route[i][j] = [[i]]
+                self._min_route[i][j][0].append(j)
 
+        # 构建对应的连接矩阵
+        for item in self._net:
+            self._connect_net[item[0]].append(item[1])
         # 构建对应的距离矩阵
         for item in self._net:
-            self._network[item[0], item[1]] = item[2]
-            self._network[item[1], item[0]] = item[2]
+            self._min_dis[item[0], item[1]] = 1
+            self._min_dis[item[1], item[0]] = 1
 
         print('=======================================================================')
         print('Q1:  The size of the points is :', end='\n')
@@ -74,12 +78,12 @@ class Net:
 
     def DrawDegreeDis(self):
         print('=======================================================================')
-        list = np.zeros(2000)
+        degree_graph = np.zeros(2000)
         for item in self._degree_dict.items():
-            list[item[1]] += 1
-        index = np.nonzero(list)
-        list = list[list != 0] / (self._point_number * 2)
-        plt.scatter(index, list)
+            degree_graph[item[1]] += 1
+        index = np.nonzero(degree_graph)
+        degree_graph = degree_graph[degree_graph != 0] / (self._point_number * 2)
+        plt.scatter(index, degree_graph)
         plt.show()
 
     def ResetRoute(self, i, j, k):
@@ -104,17 +108,28 @@ class Net:
         print('test')
         # 下面使用迪杰斯特拉算法计算最短路径
         for item in test_data:
-            joined_list = [item[0]]
-            joined_number = 1
-            min_dis = [-1, 10000000]
-            while joined_number != self._point_number:
-                for i in range(0, self._point_number):
-                    for j in range(0, len(joined_list)):
-                        if self._min_dis[i][joined_list[j]] > 0 & self._min_dis[i][joined_list[j]] < min_dis[1]:
-                            min_dis[0] = i
-                            min_dis[1] = self._min_dis[i][joined_list[j]]
-                    joined_list.append(i)
-                    joined_number += 1
+            joined = [item[0]]
+            non_joined = [x for x in range(0, self._point_number) if x != item[0]]
 
+            while len(non_joined):
+                idx = non_joined[0]
+                for i in non_joined:
+                    if self._min_dis[item[0], i] < self._min_dis[item[0], idx]:
+                        idx = i
+                joined.append(idx)
+                non_joined.remove(idx)
+                for i in non_joined:
+                    if self._min_dis[item[0], i] >= self._min_dis[item[0], idx] + self._min_dis[idx, i]:
+                        self._min_route[item[0]][i] = []
+                        self._min_dis[item[0], i] = self._min_dis[item[0], idx] + self._min_dis[idx, i]
+                        for list1 in self._min_route[item[0]][idx]:
+                            for list2 in len(self._min_route[idx][i]):
+                                self._min_route[item[0]][i].append(self._min_route[item[0]][idx][j] + self._min_route[idx][i][t][1:])
+                        # self._min_route[item[0]][i][0] = self._min_route[item[0]][idx][0] + self._min_route[idx][i][0][1:]
+                    elif self._min_dis[item[0], i] == self._min_dis[item[0], idx] + self._min_dis[idx, i]:
+                        for j in len(self._min_route[item[0]][idx]):
+                            for t in len(self._min_route[idx][i]):
+                                self._min_route[item[0]][i].append(
+                                    self._min_route[item[0]][idx][j] + self._min_route[idx][i][t][1:])
             print(self._min_route[item[0]][item[1]])
         f.close()
