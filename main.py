@@ -12,4 +12,5 @@ if __name__ == '__main__':
     net.ComputeAverageDegree()
     net.ComputeEdgeType()
     net.DrawDegreeDis()
-    net.FindMinRoute()
+    # net.FindMinRoute()
+    net.ComputeConnect()

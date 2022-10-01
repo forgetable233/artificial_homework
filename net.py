@@ -129,3 +129,27 @@ class Net:
                                     self._min_route[item[0]][i].append(list1 + list2[1:])
             print(self._min_route[item[0]][item[1]])
         f.close()
+
+    def DFS(self, begin_point, joined_list, joined_number, not_joined_list):
+        for item in self._connect_net[begin_point][1:]:
+            if joined_list[item] == 0:
+                not_joined_list.remove(item)
+                joined_list[item] = 1
+                # joined_number += 1
+                print(joined_number)
+                joined_number = self.DFS(item, joined_list, joined_number + 1, not_joined_list)
+        return joined_number
+
+    def ComputeConnect(self):
+        joined_list = np.zeros(self._point_number, dtype=int)
+        joined_list[0] = 1
+        joined_number = 1
+        not_joined_list = [x for x in range(1, self._point_number)]
+        number = 1
+        self.DFS(0, joined_list, joined_number, not_joined_list)
+        while joined_number < self._point_number:
+            number += 1
+            joined_number = self.DFS(not_joined_list[0], joined_list, joined_number, not_joined_list)
+        print('=======================================================================')
+        print('Q7: The size of the connect point is:')
+        print(number)
