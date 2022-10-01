@@ -95,7 +95,7 @@ class Net:
         print('Begin to find the min route')
         # 读入对应的测试数据
         f = open('test_data.txt', encoding='UTF-8')
-        test_data = np.zeros((4, 2), dtype=int)
+        test_data = np.zeros((7, 2), dtype=int)
         line = f.readline()
         i = 0
         while line:
@@ -120,16 +120,12 @@ class Net:
                 non_joined.remove(idx)
                 for i in non_joined:
                     if self._min_dis[item[0], i] >= self._min_dis[item[0], idx] + self._min_dis[idx, i]:
-                        self._min_route[item[0]][i] = []
+                        if self._min_dis[item[0], i] > self._min_dis[item[0], idx] + self._min_dis[idx, i]:
+                            self._min_route[item[0]][i] = []
                         self._min_dis[item[0], i] = self._min_dis[item[0], idx] + self._min_dis[idx, i]
                         for list1 in self._min_route[item[0]][idx]:
-                            for list2 in len(self._min_route[idx][i]):
-                                self._min_route[item[0]][i].append(self._min_route[item[0]][idx][j] + self._min_route[idx][i][t][1:])
-                        # self._min_route[item[0]][i][0] = self._min_route[item[0]][idx][0] + self._min_route[idx][i][0][1:]
-                    elif self._min_dis[item[0], i] == self._min_dis[item[0], idx] + self._min_dis[idx, i]:
-                        for j in len(self._min_route[item[0]][idx]):
-                            for t in len(self._min_route[idx][i]):
-                                self._min_route[item[0]][i].append(
-                                    self._min_route[item[0]][idx][j] + self._min_route[idx][i][t][1:])
+                            for list2 in self._min_route[idx][i]:
+                                if list1 + list2[1:] not in self._min_route[item[0]][i]:
+                                    self._min_route[item[0]][i].append(list1 + list2[1:])
             print(self._min_route[item[0]][item[1]])
         f.close()
