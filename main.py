@@ -13,5 +13,6 @@ if __name__ == '__main__':
     # net.ComputeEdgeType()
     # net.DrawDegreeDis()
     # net.FindMinRoute()
-    net.ComputeGather()
+    # net.ComputeGather()
     # net.ComputeConnect()
+    net.ComputeSubGraphNumber()

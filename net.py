@@ -29,6 +29,7 @@ class Net:
             self._degree_dict[self._net[i, 1]] += 1
 
         self._min_dis = np.full((self._point_number, self._point_number), 9999999, dtype=int)
+        self._edge_type = np.full((self._point_number, self._point_number), -1, dtype=int)
         self._min_route = [None] * self._point_number
         self._connect_net = [None] * self._point_number
 
@@ -47,6 +48,8 @@ class Net:
         for item in self._net:
             self._min_dis[item[0], item[1]] = 1
             self._min_dis[item[1], item[0]] = 1
+            self._edge_type[item[0], item[1]] = item[2]
+            self._edge_type[item[1], item[0]] = item[2]
 
         print('=======================================================================')
         print('Q1:  The size of the points is :', end='\n')
@@ -143,12 +146,14 @@ class Net:
     def ComputeGather(self):
         gather_dirt = {}
         temp_gather = 0
+        zero_number = 0
         for i in range(0, self._point_number):
             k = len(self._connect_net[i][1:])
             e = 0
             temp_list = self._connect_net[i][1:]
             if k == 1:
                 gather_dirt.update({i: 0})
+                zero_number += 1
                 continue
             for item1 in temp_list:
                 for item2 in temp_list:
@@ -156,11 +161,14 @@ class Net:
                         e += 1
             if e == 0:
                 gather_dirt.update({i: 0})
+                zero_number += 1
                 continue
             temp_gather += 2 * e / (k * (k - 1))
             gather_dirt.update({i: format(2 * e / (k * (k - 1)), '.3f')})
         temp_gather /= self._point_number
+        # TODO 平均数据不知道为啥为0.75倍
         print('=======================================================================')
+        print(zero_number / self._point_number)
         print('Q6: The average gather degree is :')
         print(format(temp_gather, '.3f'))
         print('The points gather degrees are :')
@@ -184,3 +192,15 @@ class Net:
         print('=======================================================================')
         print('Q7: The number of different connected nets is:')
         print(number)
+
+    def ComputeSubGraphNumber(self):
+        child_net_number = 0
+        list = [x for x in self._net if x[2] == 73]
+        for item in list:
+            for i in range(0, self._point_number):
+                if self._edge_type[i][item[0]] == 47 & self._edge_type[i][item[1]] == 47:
+                    child_net_number += 1
+        print('=======================================================================')
+        print('Q8: The number of the child net is :')
+        print(child_net_number)
+
