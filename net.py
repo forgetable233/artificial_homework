@@ -136,9 +136,9 @@ class Net:
                 not_joined_list.remove(item)
                 joined_list[item] = 1
                 # joined_number += 1
-                print(joined_number)
-                joined_number = self.DFS(item, joined_list, joined_number + 1, not_joined_list)
-        return joined_number
+                joined_list, joined_number, not_joined_list = self.DFS(item, joined_list, joined_number + 1,
+                                                                       not_joined_list)
+        return joined_list, joined_number, not_joined_list
 
     def ComputeConnect(self):
         joined_list = np.zeros(self._point_number, dtype=int)
@@ -147,9 +147,14 @@ class Net:
         not_joined_list = [x for x in range(1, self._point_number)]
         number = 1
         self.DFS(0, joined_list, joined_number, not_joined_list)
-        while joined_number < self._point_number:
+        while len(not_joined_list) > 0:
             number += 1
-            joined_number = self.DFS(not_joined_list[0], joined_list, joined_number, not_joined_list)
+            temp = not_joined_list[0]
+            not_joined_list.remove(temp)
+            joined_list[temp] = 1
+            joined_list, joined_number, not_joined_list = self.DFS(temp, joined_list, joined_number + 1,
+                                                                   not_joined_list)
+            print(joined_number)
         print('=======================================================================')
-        print('Q7: The size of the connect point is:')
+        print('Q7: The number of different connected nets is:')
         print(number)
