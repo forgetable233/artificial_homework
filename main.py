@@ -9,8 +9,9 @@ if __name__ == '__main__':
 
     data = DataLoader(FILE_PATH)
     net = Net(data)
-    net.ComputeAverageDegree()
-    net.ComputeEdgeType()
-    net.DrawDegreeDis()
+    # net.ComputeAverageDegree()
+    # net.ComputeEdgeType()
+    # net.DrawDegreeDis()
     # net.FindMinRoute()
-    net.ComputeConnect()
+    net.ComputeGather()
+    # net.ComputeConnect()

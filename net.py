@@ -140,6 +140,32 @@ class Net:
                                                                        not_joined_list)
         return joined_list, joined_number, not_joined_list
 
+    def ComputeGather(self):
+        gather_dirt = {}
+        temp_gather = 0
+        for i in range(0, self._point_number):
+            k = len(self._connect_net[i][1:])
+            e = 0
+            temp_list = self._connect_net[i][1:]
+            if k == 1:
+                gather_dirt.update({i: 0})
+                continue
+            for item1 in temp_list:
+                for item2 in temp_list:
+                    if item2 in self._connect_net[item1]:
+                        e += 1
+            if e == 0:
+                gather_dirt.update({i: 0})
+                continue
+            temp_gather += 2 * e / (k * (k - 1))
+            gather_dirt.update({i: format(2 * e / (k * (k - 1)), '.3f')})
+        temp_gather /= self._point_number
+        print('=======================================================================')
+        print('Q6: The average gather degree is :')
+        print(format(temp_gather, '.3f'))
+        print('The points gather degrees are :')
+        print(gather_dirt)
+
     def ComputeConnect(self):
         joined_list = np.zeros(self._point_number, dtype=int)
         joined_list[0] = 1
