@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import json
 import math
 
 
@@ -44,6 +46,7 @@ class Net:
         # 构建对应的连接矩阵
         for item in self._net:
             self._connect_net[item[0]].append(item[1])
+            self._connect_net[item[1]].append(item[0])
         # 构建对应的距离矩阵
         for item in self._net:
             self._min_dis[item[0], item[1]] = 1
@@ -130,7 +133,7 @@ class Net:
                             for list2 in self._min_route[idx][i]:
                                 if list1 + list2[1:] not in self._min_route[item[0]][i]:
                                     self._min_route[item[0]][i].append(list1 + list2[1:])
-            print(self._min_route[item[0]][item[1]])
+            print(item[0], '->', item[1], self._min_route[item[0]][item[1]])
         f.close()
 
     def DFS(self, begin_point, joined_list, joined_number, not_joined_list):
@@ -138,7 +141,6 @@ class Net:
             if joined_list[item] == 0:
                 not_joined_list.remove(item)
                 joined_list[item] = 1
-                # joined_number += 1
                 joined_list, joined_number, not_joined_list = self.DFS(item, joined_list, joined_number + 1,
                                                                        not_joined_list)
         return joined_list, joined_number, not_joined_list
@@ -157,14 +159,14 @@ class Net:
                 continue
             for item1 in temp_list:
                 for item2 in temp_list:
-                    if item2 in self._connect_net[item1]:
+                    if item2 in self._connect_net[item1] and item2 != item1:
                         e += 1
             if e == 0:
                 gather_dirt.update({i: 0})
                 zero_number += 1
                 continue
-            temp_gather += 2 * e / (k * (k - 1))
-            gather_dirt.update({i: format(2 * e / (k * (k - 1)), '.3f')})
+            temp_gather += e / (k * (k - 1))
+            gather_dirt.update({i: format(e / (k * (k - 1)), '.3f')})
         temp_gather /= self._point_number
         # TODO 平均数据不知道为啥为0.75倍
         print('=======================================================================')
@@ -173,8 +175,12 @@ class Net:
         print(format(temp_gather, '.3f'))
         print('The points gather degrees are :')
         print(gather_dirt)
+        json_str = json.dumps(gather_dirt, indent=4)
+        with open('6.json', 'w') as json_file:
+            json_file.write(json_str)
 
     def ComputeConnect(self):
+        sys.setrecursionlimit(3000)
         joined_list = np.zeros(self._point_number, dtype=int)
         joined_list[0] = 1
         joined_number = 1
@@ -196,7 +202,6 @@ class Net:
     def ComputeSubGraphNumber(self):
         child_net_number = 0
         list = [x for x in self._net if x[2] == 73]
-        print(list)
         for item in list:
             for i in range(0, self._point_number):
                 if self._edge_type[i][item[0]] == 47 and self._edge_type[i][item[1]] == 47:
@@ -204,4 +209,3 @@ class Net:
         print('=======================================================================')
         print('Q8: The number of the child net is :')
         print(child_net_number)
-
