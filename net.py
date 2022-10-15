@@ -53,7 +53,7 @@ class Net:
 
         print('=======================================================================')
         print('Q1:  The size of the points is :', end='\n')
-        print(len(self._degree_dict))
+        print(self._point_number)
         print('Q1:  The size of the edge is :', end='\n')
         print(self._edge_number)
 
@@ -108,12 +108,12 @@ class Net:
             i += 1
             line = f.readline()
 
+        print('=======================================================================')
+        print('Q5:  The min routes are as follows:')
         # 下面使用迪杰斯特拉算法计算最短路径
         for item in test_data:
             joined = [item[0]]
             non_joined = [x for x in range(0, self._point_number) if x != item[0]]
-            print('=======================================================================')
-            print('Q5:  The min routes are as follows:')
             while len(non_joined):
                 idx = non_joined[0]
                 for i in non_joined:
@@ -196,9 +196,10 @@ class Net:
     def ComputeSubGraphNumber(self):
         child_net_number = 0
         list = [x for x in self._net if x[2] == 73]
+        print(list)
         for item in list:
             for i in range(0, self._point_number):
-                if self._edge_type[i][item[0]] == 47 & self._edge_type[i][item[1]] == 47:
+                if self._edge_type[i][item[0]] == 47 and self._edge_type[i][item[1]] == 47:
                     child_net_number += 1
         print('=======================================================================')
         print('Q8: The number of the child net is :')
