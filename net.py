@@ -54,7 +54,7 @@ class Net:
         print('=======================================================================')
         print('Q1:  The size of the points is :', end='\n')
         print(len(self._degree_dict))
-        print('     The size of the edge is :', end='\n')
+        print('Q1:  The size of the edge is :', end='\n')
         print(self._edge_number)
 
     def ComputeAverageDegree(self):
@@ -76,7 +76,7 @@ class Net:
         print('=======================================================================')
         print('Q3:  The number of the types is')
         print(number)
-        print('Q3: The number of the edge that is 47 type is ')
+        print('Q3:  The number of the edge that is 47 type is ')
         print(list[47])
 
     def DrawDegreeDis(self):
@@ -95,7 +95,7 @@ class Net:
         self._min_route[i][j].remove(k)
 
     def FindMinRoute(self):
-        print('Begin to find the min route')
+        # print('Begin to find the min route')
         # 读入对应的测试数据
         f = open('test_data.txt', encoding='UTF-8')
         test_data = np.zeros((7, 2), dtype=int)
@@ -108,12 +108,12 @@ class Net:
             i += 1
             line = f.readline()
 
-        print('test')
         # 下面使用迪杰斯特拉算法计算最短路径
         for item in test_data:
             joined = [item[0]]
             non_joined = [x for x in range(0, self._point_number) if x != item[0]]
-
+            print('=======================================================================')
+            print('Q5:  The min routes are as follows:')
             while len(non_joined):
                 idx = non_joined[0]
                 for i in non_joined:
@@ -168,7 +168,7 @@ class Net:
         temp_gather /= self._point_number
         # TODO 平均数据不知道为啥为0.75倍
         print('=======================================================================')
-        print(zero_number / self._point_number)
+        # print(zero_number / self._point_number)
         print('Q6: The average gather degree is :')
         print(format(temp_gather, '.3f'))
         print('The points gather degrees are :')
@@ -188,7 +188,7 @@ class Net:
             joined_list[temp] = 1
             joined_list, joined_number, not_joined_list = self.DFS(temp, joined_list, joined_number + 1,
                                                                    not_joined_list)
-            print(joined_number)
+            # print(joined_number)
         print('=======================================================================')
         print('Q7: The number of different connected nets is:')
         print(number)
