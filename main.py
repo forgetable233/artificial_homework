@@ -15,7 +15,8 @@ if __name__ == '__main__':
     pdi = DataLoader(PDI_PATH)
     ppi = DataLoader(PPI_PATH)
 
-    lab2 = graph(PPI_PATH)
+    lab2 = graph(ppi)
+    lab2.get_heat_graph()
     # net = Net(data)
     # net.ComputeAverageDegree()
     # net.ComputeEdgeType()

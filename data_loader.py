@@ -24,5 +24,4 @@ class DataLoader:
             info.append(temp)
             line = f.readline()
         self._data = np.array(info)
-        print(self._data)
         f.close()
