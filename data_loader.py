@@ -8,18 +8,21 @@ class DataLoader:
 
     def __init__(self, file_path):
         self._file_path = file_path
-        self._data = np.zeros((38405, 3), dtype=int)
+        self._data = None
         self.load_file()
 
     def load_file(self):
         f = open(self._file_path, encoding='UTF-8')
         line = f.readline()
-        i = 0
+        cols = len(line.split(' '))
+        info = []
         while line:
-            array = line.split('\t')
-            self._data[i, 0] = int(array[0])
-            self._data[i, 1] = int(array[1])
-            self._data[i, 2] = int(array[2])
-            i = i + 1
+            array = line.split(' ')
+            temp = []
+            for j in range(0, cols):
+                temp.append(int(array[j]))
+            info.append(temp)
             line = f.readline()
+        self._data = np.array(info)
+        print(self._data)
         f.close()
