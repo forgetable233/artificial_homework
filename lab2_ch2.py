@@ -49,11 +49,23 @@ class ch2:
         for i in range(0, len(self._pdi[0])):
             dis_euler = 0
             dis_cos = 0
-            temp1 = np.array(centers[i])
+            list1 = np.nonzero(self._pdi[:, i])
+            num = len(list1)
             for j in [x for x in range(0, len(self._pdi[0])) if x != i]:
-                temp2 = np.array(centers[j])
-                dis_euler += np.linalg.norm(temp1 - temp2)
-                dis_cos += np.dot(temp1, temp2) / (np.linalg.norm(temp1) * np.linalg.norm(temp2))
+                local_dis_euler = 0
+                local_dis_cos = 0
+                list2 = np.nonzero(self._pdi[:, j])
+                num *= len(list2)
+                for item1 in list1[0]:
+                    temp1 = self._ppi[item1, :]
+                    for item2 in list2[0]:
+                        temp2 = self._ppi[item2, :]
+                        local_dis_euler += np.linalg.norm(temp1 - temp2)
+                        local_dis_cos += np.dot(temp1, temp2) / (np.linalg.norm(temp1) * np.linalg.norm(temp2))
+                local_dis_euler /= (len(list2[0]) * len(list1[0]))
+                local_dis_cos /= (len(list2[0]) * len(list1[0]))
+                dis_euler += local_dis_euler
+                dis_cos += local_dis_cos
             dis_euler /= (len(self._pdi[0]) - 1)
             dis_cos /= (len(self._pdi[0]) - 1)
             data.append(['D' + str(i + 1), in_euler[i], in_cos[i], dis_euler, dis_cos])
@@ -62,4 +74,3 @@ class ch2:
         out_data.to_excel('dis.xlsx')
         print(out_data)
         print(data)
-
