@@ -7,9 +7,12 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.datasets import load_iris
 
+
 class graph:
     def __init__(self, input_data):
         self._net = input_data._data
+        self._reco_mat = None
+        self._num = None
 
     def my_pca(self, data, mean):
         input_data = np.array(data)
@@ -29,16 +32,45 @@ class graph:
         new_data = self._net - mean_val
         return new_data, mean_val
 
+    def my_k_means(self):
+        n = int(math.sqrt(self._num / 2))
+        k_list = []
+        k_center = np.zeros((n, len(self._reco_mat[0])))
+        begin_center = (np.random.random(n) * self._num).astype(np.int32)
+        unjoined_list = [x for x in range(0, self._num) if x not in begin_center]
+        for i in range(0, n):
+            k_list.append([begin_center[i]])
+            k_center[i, :] = k_center[i, :] + np.array(self._reco_mat[i, :])
+        while len(unjoined_list) != 0:
+            tar = unjoined_list[0]
+            unjoined_list.remove(tar)
+            min_dis = float('inf')
+            min_dis_index = -1
+            for i in range(0, n):
+                temp_dis = np.linalg.norm(self._reco_mat[tar, :] - k_center[i, :])
+                if temp_dis < min_dis:
+                    min_dis_index = i
+                    min_dis = temp_dis
+            length = len(k_list[min_dis_index])
+            # 重新计算中心
+            k_center[min_dis_index, :] = \
+                k_center[min_dis_index, :] * (length / (length + 1)) + \
+                self._reco_mat[min_dis_index, :] * (1 / (length + 1))
+            k_list[min_dis_index].append(tar)
+        print(n)
+        # 返回列表以及k个中心
+        return k_list, k_center
+
     def get_heat_graph(self):
-        num = len(self._net)
+        self._num = len(self._net)
         pca = PCA(n_components='mle')
-        new_data = pca.fit_transform(self._net)
-        sim_mat = np.zeros([num, num])
-        for i in range(0, num):
-            for j in range(0, num):
-                sim_mat[i, j] = np.linalg.norm(new_data[i, :] - new_data[j, :])
-        sns.set(style='whitegrid', color_codes=True)
-        test = sim_mat[0:10, 0:10]
+        self._reco_mat = pca.fit_transform(self._net)
+        k_list, k_center = self.my_k_means()
+        sim_mat = np.zeros((len(k_center), len(k_center)))
+        for i in range(0, len(k_center)):
+            for j in range(0, len(k_center)):
+                sim_mat[i, j] = np.linalg.norm(k_center[i, :] - k_center[j, :])
         sns.heatmap(sim_mat)
+        sns.set(style='whitegrid', color_codes=True)
         plt.show()
         print('finish heat map')
