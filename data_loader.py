@@ -23,5 +23,5 @@ class DataLoader:
                 temp.append(int(array[j]))
             info.append(temp)
             line = f.readline()
-        self._data = np.array(info)
+        self._data = info
         f.close()

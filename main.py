@@ -4,7 +4,8 @@ import matplotlib as plot
 import seaborn as sb
 from data_loader import DataLoader
 from lab1 import Net
-from lab2 import graph
+from lab2_ch1 import graph
+from lab2_ch2 import *
 
 FILE_PATH = 'ddi_with_type_latest.txt'
 PDI_PATH = 'pdi.txt'
@@ -15,8 +16,10 @@ if __name__ == '__main__':
     pdi = DataLoader(PDI_PATH)
     ppi = DataLoader(PPI_PATH)
 
-    lab2 = graph(ppi)
-    lab2.get_heat_graph()
+    # ch1 = graph(ppi)
+    # ch1.get_heat_graph()
+    ch2 = ch2(ppi, pdi)
+    ch2.out_excel()
     # net = Net(data)
     # net.ComputeAverageDegree()
     # net.ComputeEdgeType()
@@ -25,4 +28,10 @@ if __name__ == '__main__':
     # net.ComputeGather()
     # net.ComputeConnect()
     # net.ComputeSubGraphNumber()
+
+    # test = np.array([[3, 4, 5], [3, 4, 5], [3, 4, 5]])
+    # test2 = []
+    # test2.append(list(test[1, :]))
+    # print(test2)
+
 

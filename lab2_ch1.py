@@ -32,22 +32,22 @@ class graph:
         new_data = self._net - mean_val
         return new_data, mean_val
 
-    def my_k_means(self):
-        n = int(math.sqrt(self._num / 2))
+    def my_k_means(self, mat, num):
+        n = int(math.sqrt(num / 2))
         k_list = []
-        k_center = np.zeros((n, len(self._reco_mat[0])))
-        begin_center = (np.random.random(n) * self._num).astype(np.int32)
-        unjoined_list = [x for x in range(0, self._num) if x not in begin_center]
+        k_center = np.zeros((n, len(mat[0])))
+        begin_center = (np.random.random(n) * num).astype(np.int32)
+        unjoined_list = [x for x in range(0, num) if x not in begin_center]
         for i in range(0, n):
             k_list.append([begin_center[i]])
-            k_center[i, :] = k_center[i, :] + np.array(self._reco_mat[i, :])
+            k_center[i, :] = k_center[i, :] + np.array(mat[i, :])
         while len(unjoined_list) != 0:
             tar = unjoined_list[0]
             unjoined_list.remove(tar)
             min_dis = float('inf')
             min_dis_index = -1
             for i in range(0, n):
-                temp_dis = np.linalg.norm(self._reco_mat[tar, :] - k_center[i, :])
+                temp_dis = np.linalg.norm(mat[tar, :] - k_center[i, :])
                 if temp_dis < min_dis:
                     min_dis_index = i
                     min_dis = temp_dis
@@ -55,7 +55,7 @@ class graph:
             # 重新计算中心
             k_center[min_dis_index, :] = \
                 k_center[min_dis_index, :] * (length / (length + 1)) + \
-                self._reco_mat[min_dis_index, :] * (1 / (length + 1))
+                mat[min_dis_index, :] * (1 / (length + 1))
             k_list[min_dis_index].append(tar)
         print(n)
         # 返回列表以及k个中心
@@ -65,12 +65,13 @@ class graph:
         self._num = len(self._net)
         pca = PCA(n_components='mle')
         self._reco_mat = pca.fit_transform(self._net)
-        k_list, k_center = self.my_k_means()
+        k_list, k_center = self.my_k_means(self._reco_mat, self._num)
         sim_mat = np.zeros((len(k_center), len(k_center)))
         for i in range(0, len(k_center)):
             for j in range(0, len(k_center)):
                 sim_mat[i, j] = np.linalg.norm(k_center[i, :] - k_center[j, :])
         sns.heatmap(sim_mat)
-        sns.set(style='whitegrid', color_codes=True)
+        sns.color_palette('deep')
+        # sns.set(style='whitegrid')
         plt.show()
         print('finish heat map')
