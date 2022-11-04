@@ -66,12 +66,13 @@ class graph:
         pca = PCA(n_components='mle')
         self._reco_mat = pca.fit_transform(self._net)
         k_list, k_center = self.my_k_means(self._reco_mat, self._num)
-        sim_mat = np.zeros((len(k_center), len(k_center)))
-        for i in range(0, len(k_center)):
-            for j in range(0, len(k_center)):
-                sim_mat[i, j] = np.linalg.norm(k_center[i, :] - k_center[j, :])
-        sns.heatmap(sim_mat)
-        sns.color_palette('deep')
+        sim_mat = np.zeros((len(self._net), len(self._net)))
+        for i in range(0, len(self._net)):
+            for j in range(0, len(self._net)):
+                temp1 = np.array(self._net[i])
+                temp2 = np.array(self._net[j])
+                sim_mat[i, j] = np.linalg.norm(temp2 - temp1)
+        sns.heatmap(data=sim_mat, cmap=plt.get_cmap('Set3'))
         # sns.set(style='whitegrid')
         plt.show()
         print('finish heat map')
